@@ -12,8 +12,7 @@ local Database = require( "utils.Database" )
 coronium:init({ appId = globals.appId, apiKey = globals.apiKey })
 coronium.showStatus = true
 
-local cor = 1--math.random( 1,#globals.colors.b )
-display.setDefault( "background", globals.colors.b[cor][1], globals.colors.b[cor][2], globals.colors.b[cor][3])
+
 
 -- This function gets called when the user opens a notification or one is received when the app is open and active.
 -- Change the code below to fit your app's needs.

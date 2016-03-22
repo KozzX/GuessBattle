@@ -9,18 +9,20 @@ local sceneName = ...
 local composer = require( "composer" )
 local Botao = require( "objetos.Botao" )
 local globals = require( "globals" )
+local Background = require( "objetos.Background" )
 
 
 -- Load scene with same root filename as this file
 local scene = composer.newScene(  )
 local btnFacebook 
 local btnLocal
+local bg
 
 
 ---------------------------------------------------------------------------------
 local function facebookUser( event )
     print( event.target )
-    composer.gotoScene( "cenas.loading", { effect = "fade", time = 300, params={tipoLogin="facebook" } } )
+    composer.gotoScene( "cenas.loading", { effect = "crossFade", time = 300, params={tipoLogin="facebook" } } )
 end
 
 local function localUser( event )
@@ -39,18 +41,23 @@ function scene:show( event )
     local phase = event.phase
 
     if phase == "will" then
+        bg = Background.new()
+        bg:toBack( )
+        btnFacebook = Botao.newFacebook("Facebook", 50-5)
+        btnLocal    = Botao.new("Local User", 50+4)
+        sceneGroup:insert( bg )
+        sceneGroup:insert( btnFacebook )
+        sceneGroup:insert( btnLocal )
         
 
     elseif phase == "did" then
-
-        btnFacebook = Botao.newFacebook("Facebook", 50-6)
-        btnLocal    = Botao.new("Local User", 50+6)
+        local prevScene = composer.getSceneName( "previous" )
+        if (prevScene) then
+            composer.removeScene( prevScene )
+        end
 
         btnFacebook:addEventListener( "tap", facebookUser )
         btnLocal:addEventListener( "tap", localUser )
-
-        sceneGroup:insert( btnFacebook )
-        sceneGroup:insert( btnLocal )
         
     end 
 end

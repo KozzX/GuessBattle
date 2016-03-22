@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------
 --
--- login.lua
+-- loading.lua
 --
 ---------------------------------------------------------------------------------
 
@@ -12,6 +12,7 @@ local globals = require( "globals" )
 local coronium = require( "mod_coronium" )
 local Database = require( "utils.Database" )
 local SpinIcon = require ( "objetos.SpinIcon" )
+local Background = require( "objetos.Background" )
 
 coronium:init({ appId = globals.appId, apiKey = globals.apiKey })
 coronium.showStatus = true
@@ -27,7 +28,7 @@ local function insertCallback( event )
     if result.affected_rows > 0 then
         globals.player.id = result.insert_id
         adicionarJogador(globals.player.id, globals.player.facebookId, globals.player.name)
-        composer.gotoScene( "cenas.mainmenu", "fade", 500 ) 
+        composer.gotoScene( "cenas.mainmenu", "crossFade", 500 ) 
     end
 end
 
@@ -39,7 +40,7 @@ local function procuraFacebookCallback( event )
         globals.player.id = result[1].id 
         adicionarJogador(globals.player.id, globals.player.facebookId, globals.player.name)
         printPlayer()
-        composer.gotoScene( "cenas.mainmenu", "fade", 500 ) 
+        composer.gotoScene( "cenas.mainmenu", "crossFade", 500 ) 
     else
         print( "Não tem Facebok" )
         coronium:run("insertGuessPlayer", globals.player, insertCallback)
@@ -53,7 +54,7 @@ local function localUser( )
         if (globals.player.id == nil) then
             coronium:run("insertGuessPlayer", globals.player, insertCallback)            
         else
-            composer.gotoScene( "cenas.mainmenu", "fade", 500 )         
+            composer.gotoScene( "cenas.mainmenu", "crossFade", 500 )         
         end
     end , 1 )
     
@@ -88,10 +89,17 @@ function scene:show( event )
     local extras = event.params
 
     if phase == "will" then
+        
+        bg = Background.new()
+        bg:toBack( )
 
         spinIcon = SpinIcon.new()
 
     elseif phase == "did" then
+        local prevScene = composer.getSceneName( "previous" )
+        if (prevScene) then
+            composer.removeScene( prevScene )
+        end
 
         
 
@@ -101,6 +109,7 @@ function scene:show( event )
             (extras.tipoLogin == "local") then
             localUser()
         end
+        sceneGroup:insert( bg )
         sceneGroup:insert( spinIcon )
         
     end 
@@ -115,10 +124,11 @@ function scene:hide( event )
         --
         -- INSERT code here to pause the scene
         -- e.g. stop timers, stop animation, unload sounds, etc.)
+        remover()
         
 
     elseif phase == "did" then
-        remover()
+        
         -- Called when the scene is now off screen
 
     end 

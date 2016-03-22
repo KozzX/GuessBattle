@@ -1,6 +1,6 @@
 ---------------------------------------------------------------------------------
 --
--- login.lua
+-- mainmenu.lua
 --
 ---------------------------------------------------------------------------------
 
@@ -10,6 +10,7 @@ local composer = require( "composer" )
 local Botao = require( "objetos.Botao" )
 local globals = require( "globals" )
 --local Database = require( "Database" )
+local Background = require( "objetos.Background" )
 
 
 
@@ -32,9 +33,15 @@ function scene:show( event )
 
     if phase == "will" then
 
+        bg = Background.new()
+        bg:toBack( )
         
 
     elseif phase == "did" then
+        local prevScene = composer.getSceneName( "previous" )
+        if (prevScene) then
+            composer.removeScene( prevScene )
+        end
 
         local btn1  = Botao.new(globals.player.id, 5)
         local btn2  = Botao.new(globals.player.facebookId, 17)
@@ -43,6 +50,8 @@ function scene:show( event )
         local btn5  = Botao.new(globals.player.last_name, 53)
         local btn6  = Botao.new(globals.player.age_range, 65)
         local btn7  = Botao.new(globals.player.gender, 77)
+
+        sceneGroup:insert( bg )
 
 
     end 
